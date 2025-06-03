@@ -1,0 +1,72 @@
+<div class="container">
+  <h2>My Reservations</h2>
+
+  <!-- Error Message -->
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Loading Spinner -->
+  <div *ngIf="isLoading">
+    <p>Loading your bookings...</p>
+  </div>
+
+  <!-- Table -->
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover">
+      <thead class="thead-dark">
+        <tr>
+          <th>#</th>
+          <th>Room Details</th>
+          <th>Check-In Date</th>
+          <th>Check-Out Date</th>
+          <th>Price</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let booking of bookings; let i = index">
+          <td>{{ (currentPage - 1) * 5 + i + 1 }}</td>
+          <td>
+            {{ booking.roomName }}<br>
+            <small>Type: {{ booking.roomType }}</small>
+          </td>
+          <td>{{ booking.checkIn | date: 'shortDate' }}</td>
+          <td>{{ booking.checkOut | date: 'shortDate' }}</td>
+          <td>{{ booking.price | currency }}</td>
+          <td>
+            <span class="badge" [ngClass]="{
+              'badge-success': booking.reservationstatus === 'APPROVED',
+              'badge-warning': booking.reservationstatus === 'PENDING',
+              'badge-danger': booking.reservationstatus === 'REJECTED'
+            }">
+              {{ booking.reservationstatus }}
+            </span>
+          </td>
+        </tr>
+        <tr *ngIf="!isLoading && bookings.length === 0">
+          <td colspan="6" class="text-center">No reservations found</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="d-flex justify-content-center mt-4" *ngIf="total > 1">
+    <button class="btn btn-outline-primary mx-1"
+            (click)="pageIndexChange(currentPage - 1)"
+            [disabled]="currentPage === 1">
+      Previous
+    </button>
+
+    <span class="mx-3 align-self-center">
+      Page {{ currentPage }} of {{ total }}
+    </span>
+
+    <button class="btn btn-outline-primary mx-1"
+            (click)="pageIndexChange(currentPage + 1)"
+            [disabled]="currentPage === total">
+      Next
+    </button>
+  </div>
+</div>

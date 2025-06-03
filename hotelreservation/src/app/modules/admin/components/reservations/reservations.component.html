@@ -1,0 +1,79 @@
+<div class="container">
+    <h2>Reservation Management</h2>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Guest</th>
+                    <th>Room Details</th>
+                    <th>Check-In Date</th>
+                    <th>Check-Out Date</th>
+                    <th>Price</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let res of reservation; let i = index">
+                    <td>{{ (currentPage - 1) * 5 + i + 1 }}</td>
+                    <td>
+                        {{ res.username }}<br>
+                        <small>(User ID: {{ res.userId }})</small>
+                    </td>
+                    <td>
+                        {{ res.roomName }}<br>
+                        <small>Type: {{ res.roomType }}</small>
+                    </td>
+                    <td>{{ res.checkIn | date:'shortDate' }}</td>
+                    <td>{{ res.checkOut | date:'shortDate' }}</td>
+                    <td>{{ res.price | currency }}</td>
+                    <td>
+  <span [ngClass]="{
+    'badge badge-success': res.reservationstatus === 'APPROVED',
+    'badge badge-warning': res.reservationstatus === 'PENDING',
+    'badge badge-danger': res.reservationstatus === 'REJECTED'
+  }">
+    {{ res.reservationstatus }}
+  </span>
+</td>
+<td>
+  <button class="btn btn-sm btn-success mr-2"
+          (click)="changeReservationStatus(res.id, 'approved')"
+          [disabled]="res.reservationstatus === 'APPROVED'">
+    Approve
+  </button>
+  <button class="btn btn-sm btn-danger"
+          (click)="changeReservationStatus(res.id, 'rejected')"
+          [disabled]="res.reservationstatus === 'REJECTED'">
+    Reject
+  </button>
+</td>
+                </tr>
+                <tr *ngIf="reservation?.length === 0">
+                    <td colspan="8" class="text-center">No reservations found</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<!-- Pagination Controls -->
+<div class="d-flex justify-content-center mt-4" *ngIf="total > 1">
+  <button class="btn btn-outline-primary mx-1"
+          (click)="pageIndexChange(currentPage - 1)"
+          [disabled]="currentPage === 1">
+    Previous
+  </button>
+
+  <span class="mx-3 align-self-center">
+    Page {{ currentPage }} of {{ total }}
+  </span>
+
+  <button class="btn btn-outline-primary mx-1"
+          (click)="pageIndexChange(currentPage + 1)"
+          [disabled]="currentPage === total">
+    Next
+  </button>
+</div>
